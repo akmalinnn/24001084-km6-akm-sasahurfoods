@@ -1,10 +1,10 @@
-package com.example.a24001084_km6_akm_warungpenyet_ch2.model
+package com.akmalin.sasahurfoods.data.model
 
 import android.os.Parcelable
-import androidx.annotation.DrawableRes
+import kotlinx.android.parcel.Parcelize
 import java.util.UUID
 
-
+@Parcelize
 data class Menu(
     var id: String = UUID.randomUUID().toString(),
     var imgUrl : String,
@@ -12,6 +12,7 @@ data class Menu(
     var price: Double,
     var desc: String,
     var location: String,
-    var locUrl: String
-    )
+    var locUrl: String,
+    var rating: Double
+    ): Parcelable
 
