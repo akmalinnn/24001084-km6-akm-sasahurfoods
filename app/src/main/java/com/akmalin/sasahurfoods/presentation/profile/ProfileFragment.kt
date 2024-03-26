@@ -18,4 +18,34 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Disable edit text fields initially
+        binding.emailEdit.isEnabled = false
+        binding.nameEdit.isEnabled = false
+        binding.usernameEdit.isEnabled = false
+
+        binding.btnEdit.setOnClickListener {
+            val isEditing = !binding.emailEdit.isEnabled
+            binding.emailEdit.isEnabled = isEditing
+            binding.nameEdit.isEnabled = isEditing
+            binding.usernameEdit.isEnabled = isEditing
+
+            setButtonText(isEditing)
+        }
+
+        setButtonText(false)
+    }
+
+    private fun setButtonText(isEditing: Boolean) {
+        binding.btnEdit.text = if (isEditing) {
+            getString(R.string.save)
+        } else {
+            getString(R.string.edit)
+        }
+    }
+
+
 }
