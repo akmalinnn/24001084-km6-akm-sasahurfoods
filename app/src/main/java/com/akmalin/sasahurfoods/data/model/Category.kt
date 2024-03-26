@@ -1,6 +1,4 @@
-package com.example.a24001084_km6_akm_warungpenyet_ch2.model
-
-import androidx.annotation.DrawableRes
+package com.akmalin.sasahurfoods.data.model
 import java.util.UUID
 
 data class Category(
