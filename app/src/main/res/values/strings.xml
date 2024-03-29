@@ -7,7 +7,7 @@
     <string name="tittle_tab_person">Profile\n</string>
     <string name="location">Location</string>
     <string name="menu_desc">This description</string>
-    <string name="checkout">Tambah Pesanan</string>
+    <string name="add_item">Tambah Pesanan</string>
     <string name="_0">0</string>
     <string name="add_value">+</string>
     <string name="decrease_value">-</string>
@@ -18,7 +18,31 @@
     <string name="text_list_menu">List menu yang tersedia</string>
     <string name="text_grid_mode">Grid Mode</string>
     <string name="text_list_mode">List Mode</string>
-    <string name="text_profile_main">Profile</string>
+    <string name="text_profile_main">Profil</string>
     <string name="edit">Edit</string>
-    <string name="save">Save</string>
+    <string name="save">Simpan</string>
+    <string name="text_checkout">Checkout</string>
+    <string name="text_total_price">Total Harga</string>
+    <string name="text_title_your_cart">Pesanan</string>
+    <string name="text_hint_notes">isi note</string>
+    <string name="text_delivery_method">Pengiriman</string>
+    <string name="text_pick_up">Pick Up</string>
+    <string name="text_delivery">Delivery</string>
+    <string name="text_payment_method">Metode Pembayaran</string>
+    <string name="text_cash">Cash</string>
+    <string name="text_e_wallet">E-wallet</string>
+    <string name="shopping_summary">Detail Pesanan</string>
+    <string name="text_title_order_confirmation">Konfirmasi Pesanan</string>
+    <string name="total_quantity">x%s</string>
+    <string name="text_cart_is_empty">Tidak ada pesanan</string>
+    <string name="text_add_to_cart_success">Sukses Menambah Pesanan</string>
+    <string name="add_to_cart_failed">Pesanan gagal</string>
+    <string name="loading">Loading</string>
+    <string name="detail_total_price">Total : %1$s</string>
+    <string name="text_finish">Selesai</string>
+    <string name="add_menu_first">Tambahkan Item</string>
+    <string name="home_header_banner">https://raw.githubusercontent.com/akmalinnn/sasahursFood-assets/main/banner/bg_banner.webp</string>
+    <string name="home_header_discount">https://github.com/akmalinnn/sasahursFood-assets/blob/main/banner/ic_discount_banner.jpg?raw=true</string>
+    <string name="home_header_food">https://github.com/akmalinnn/sasahursFood-assets/blob/main/banner/ic_food_banner.png?raw=true</string>
+    <string name="checkout_success">Checkout berhasil!</string>
 </resources>

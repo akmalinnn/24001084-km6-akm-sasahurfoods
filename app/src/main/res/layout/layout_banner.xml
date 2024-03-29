@@ -13,10 +13,10 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/bg_home_banner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_banner" />
+            android:scaleType="centerCrop" />
 
         <View
             android:layout_width="match_parent"
@@ -35,7 +35,6 @@
                 android:layout_height="80dp"
                 android:foregroundGravity="center"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_food_banner"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -45,7 +44,6 @@
                 android:layout_height="80dp"
                 android:foregroundGravity="center"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_discount_banner"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

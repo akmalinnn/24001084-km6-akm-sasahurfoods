@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.akmalin.sasahurfoods.R
 import com.akmalin.sasahurfoods.data.datasource.category.DummyCategoryDataSource
 import com.akmalin.sasahurfoods.data.datasource.menu.DummyMenuDataSource
@@ -16,7 +17,7 @@ import com.akmalin.sasahurfoods.data.model.Menu
 import com.akmalin.sasahurfoods.data.repository.CategoryRepositoryImpl
 import com.akmalin.sasahurfoods.data.repository.MenuRepositoryImpl
 import com.akmalin.sasahurfoods.databinding.FragmentHomeBinding
-import com.akmalin.sasahurfoods.presentation.detailfood.DetailFoodActivity
+import com.akmalin.sasahurfoods.presentation.detailfood.DetailMenuActivity
 import com.akmalin.sasahurfoods.presentation.home.adapter.CategoryAdapter
 import com.akmalin.sasahurfoods.presentation.home.adapter.MenuAdapter
 import com.akmalin.sasahurfoods.presentation.home.adapter.OnItemClickedListener
@@ -50,6 +51,7 @@ class HomeFragment : Fragment() {
         bindCategoryList(viewModel.getCategories())
         bindMenuList(isUsingGridMode)
         setClickActionMenu()
+        bindBanner()
     }
 
     private fun initCategoryAdapter() {
@@ -74,6 +76,11 @@ class HomeFragment : Fragment() {
         categoryAdapter.submitData(data)
     }
 
+    private fun bindBanner() {
+        binding.layoutHeader.layoutBanner.ivFoodBanner.load(getString(R.string.home_header_food))
+        binding.layoutHeader.layoutBanner.ivIconBanner.load(getString(R.string.home_header_discount))
+        binding.layoutHeader.layoutBanner.bgHomeBanner.load(getString(R.string.home_header_banner))
+    }
     private fun bindMenuList(isUsingGrid: Boolean) {
         val listMode = if (isUsingGrid) MenuAdapter.MODE_GRID else MenuAdapter.MODE_LIST
         adapterMenu = MenuAdapter(
@@ -96,6 +103,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToDetail(item : Menu) {
-        DetailFoodActivity.startActivity(requireContext(),item)
+        DetailMenuActivity.startActivity(requireContext(),item)
     }
 }

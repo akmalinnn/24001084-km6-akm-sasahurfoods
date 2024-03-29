@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="seed">#32906c</color>
+    <color name="grey_background">#E4E7EB</color>
+
+    <color name="transparent">#00FFFFFF</color>
     <color name="md_theme_light_primary">#006C4C</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#88F8C7</color>
