@@ -18,7 +18,7 @@
             android:name=".presentation.checkout.CheckoutActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.detailfood.DetailFoodActivity"
+            android:name=".presentation.detailfood.DetailMenuActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.main.MainActivity"
