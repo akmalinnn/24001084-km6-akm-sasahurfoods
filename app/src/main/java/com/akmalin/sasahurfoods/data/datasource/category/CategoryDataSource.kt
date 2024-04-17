@@ -1,7 +1,7 @@
 package com.akmalin.sasahurfoods.data.datasource.category
 
-import com.akmalin.sasahurfoods.data.model.Category
+import com.akmalin.sasahurfoods.data.source.network.model.category.CategoriesResponse
 
 interface CategoryDataSource {
-    fun getCategories(): List<Category>
+    suspend fun getCategoryData(): CategoriesResponse
 }

@@ -22,6 +22,7 @@ import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
 import com.akmalin.sasahurfoods.utils.toIndonesianFormat
 
+
 class DetailMenuActivity : AppCompatActivity() {
 
     lateinit var menu: Menu

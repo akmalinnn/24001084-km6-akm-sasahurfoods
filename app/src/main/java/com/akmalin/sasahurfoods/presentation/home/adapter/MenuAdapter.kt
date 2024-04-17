@@ -12,12 +12,11 @@ import com.akmalin.sasahurfoods.databinding.ItemMenuGridBinding
 import com.akmalin.sasahurfoods.presentation.home.adapter.viewholder.MenuGridItemViewHolder
 import com.akmalin.sasahurfoods.presentation.home.adapter.viewholder.MenuListItemViewHolder
 
-class MenuAdapter (
-    private val listener: OnItemClickedListener<Menu>,
-    private val listMode: Int = MODE_LIST
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+class MenuAdapter(
+    private var listMode: Int,
+    private val listener: (Menu) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val MODE_LIST = 0
         const val MODE_GRID = 1
@@ -30,9 +29,8 @@ class MenuAdapter (
             }
 
             override fun areContentsTheSame(oldItem: Menu, newItem: Menu): Boolean {
-                return oldItem.hashCode() == newItem.hashCode()
+                return oldItem.hashCode() == oldItem.hashCode()
             }
-
         }
     )
 
@@ -64,9 +62,8 @@ class MenuAdapter (
         if (holder !is ViewHolderBinder<*>) return
         (holder as ViewHolderBinder<Menu>).bind(asyncDataDiffer.currentList[position])
     }
-}
 
-interface OnItemClickedListener<T> {
-    fun onItemClicked(item: T)
+    fun updateLayout(newListMode: Int) {
+        listMode = newListMode
+    }
 }
-
