@@ -2,15 +2,10 @@ package com.akmalin.sasahurfoods.presentation.checkout
 
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import com.akmalin.sasahurfoods.R
 import com.akmalin.sasahurfoods.data.datasource.cart.CartDataSource
 import com.akmalin.sasahurfoods.data.datasource.cart.CartDatabaseDataSource
@@ -18,7 +13,6 @@ import com.akmalin.sasahurfoods.data.repository.CartRepository
 import com.akmalin.sasahurfoods.data.repository.CartRepositoryImpl
 import com.akmalin.sasahurfoods.data.source.local.database.AppDatabase
 import com.akmalin.sasahurfoods.databinding.ActivityCheckoutBinding
-import com.akmalin.sasahurfoods.presentation.cart.CartViewModel
 import com.akmalin.sasahurfoods.presentation.checkout.adapter.PriceListAdapter
 import com.akmalin.sasahurfoods.presentation.common.adapter.CartListAdapter
 import com.akmalin.sasahurfoods.utils.GenericViewModelFactory

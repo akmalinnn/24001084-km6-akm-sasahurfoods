@@ -1,7 +1,7 @@
 package com.akmalin.sasahurfoods.data.datasource.menu
 
-import com.akmalin.sasahurfoods.data.model.Menu
+import com.akmalin.sasahurfoods.data.source.network.model.menu.MenusResponse
 
 interface MenuDataSource {
-    fun getMenus(): List<Menu>
+    suspend fun getMenuData(categorySlug: String? = null): MenusResponse
 }
