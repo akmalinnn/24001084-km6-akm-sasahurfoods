@@ -1,5 +1,6 @@
 package com.akmalin.sasahurfoods.presentation.checkout
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.viewModels
@@ -7,17 +8,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.akmalin.sasahurfoods.R
+import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
+import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
 import com.akmalin.sasahurfoods.data.datasource.cart.CartDataSource
 import com.akmalin.sasahurfoods.data.datasource.cart.CartDatabaseDataSource
 import com.akmalin.sasahurfoods.data.repository.CartRepository
 import com.akmalin.sasahurfoods.data.repository.CartRepositoryImpl
+import com.akmalin.sasahurfoods.data.repository.UserRepository
+import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
 import com.akmalin.sasahurfoods.data.source.local.database.AppDatabase
+import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseService
+import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
 import com.akmalin.sasahurfoods.databinding.ActivityCheckoutBinding
 import com.akmalin.sasahurfoods.presentation.checkout.adapter.PriceListAdapter
 import com.akmalin.sasahurfoods.presentation.common.adapter.CartListAdapter
+import com.akmalin.sasahurfoods.presentation.login.LoginActivity
+import com.akmalin.sasahurfoods.presentation.main.MainActivity
 import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
 import com.akmalin.sasahurfoods.utils.toIndonesianFormat
+
 
 class CheckoutActivity : AppCompatActivity() {
 
@@ -26,10 +36,13 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private val viewModel: CheckoutViewModel by viewModels {
-        val db = AppDatabase.getInstance(this)
-        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
-        val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CheckoutViewModel(rp))
+        val service: FirebaseService = FirebaseServiceImpl()
+        val firebaseDataSource: AuthDataSource = FirebaseAuthDataSource(service)
+        val firebaseRepository: UserRepository = UserRepositoryImpl(firebaseDataSource)
+        val database = AppDatabase.getInstance(this)
+        val dataSource: CartDataSource = CartDatabaseDataSource(database.cartDao())
+        val cartRepository: CartRepository = CartRepositoryImpl(dataSource)
+        GenericViewModelFactory.create(CheckoutViewModel(cartRepository, firebaseRepository))
     }
 
     private val adapter: CartListAdapter by lazy {
@@ -54,7 +67,12 @@ class CheckoutActivity : AppCompatActivity() {
             onBackPressed()
         }
         binding.btnCheckout.setOnClickListener {
-            displayCheckoutSuccessDialog()
+            if (viewModel.isLoggedIn()) {
+                viewModel.removeItemCart()
+                displayCheckoutSuccessDialog()
+            } else {
+                navigateToLogin()
+            }
         }
     }
 
@@ -69,13 +87,20 @@ class CheckoutActivity : AppCompatActivity() {
             dialog.dismiss()
             viewModel.removeItemCart()
             finish()
+            navigateToMain()
         }
-
         dialog.show()
     }
 
+    private fun navigateToMain() {
+        startActivity(Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        })
+    }
 
-
+    private fun navigateToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+    }
 
     private fun setupList() {
         binding.layoutContent.rvCart.adapter = adapter
@@ -96,6 +121,7 @@ class CheckoutActivity : AppCompatActivity() {
                         adapter.submitData(carts)
                         binding.tvTotalPrice.text = totalPrice.toIndonesianFormat()
                         priceItemAdapter.submitData(priceItems)
+
                     }
                 }, doOnLoading = {
                     binding.layoutState.root.isVisible = true
