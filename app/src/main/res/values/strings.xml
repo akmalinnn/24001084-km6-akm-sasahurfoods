@@ -45,4 +45,31 @@
     <string name="home_header_discount">https://github.com/akmalinnn/sasahursFood-assets/blob/main/banner/ic_discount_banner.jpg?raw=true</string>
     <string name="home_header_food">https://github.com/akmalinnn/sasahursFood-assets/blob/main/banner/ic_food_banner.png?raw=true</string>
     <string name="checkout_success">Checkout berhasil!</string>
+
+    <string name="text_password_does_not_match">Password tidak Sesuai</string>
+    <string name="text_error_email_empty">Email tidak boleh kosong!</string>
+    <string name="text_error_email_invalid">Masukkan email yang valid!</string>
+    <string name="text_error_password_empty">Password tidak boleh kososng </string>
+    <string name="text_error_password_less_than_8_char">Password kurang dari 8 karakter!</string>
+    <string name="text_error_name_cannot_empty">Nama tidak boleh kosong!</string>
+    <string name="title_email_input_profile">Email</string>
+    <string name="title_password_input_profile">Password</string>
+    <string name="password_hint">Konfirmasi Password</string>
+    <string name="toast_error">Tolong masukkan data yang benar</string>
+    <string name="text_login_title">Login</string>
+    <string name="text_nav_to_register">Belum punya akun? Daftar disini</string>
+    <string name="text_btn_login">Login</string>
+    <string name="text_title_username">Username</string>
+    <string name="text_input_username">Username</string>
+    <string name="text_title_email">Email</string>
+    <string name="text_input_email">Email</string>
+    <string name="text_title_password">Password</string>
+    <string name="text_input_password">Password</string>
+    <string name="text_confirm_password">Konfirmasi Password</string>
+    <string name="text_register_your_account">Register</string>
+    <string name="text_btn_register">Register</string>
+    <string name="text_already_has_account">Sudah punya akun? Login disini!</string>
+    <string name="text_btn_logout">Logout</string>
+    <string name="login_failed">Login Gagal : %1$s</string>
+    <string name="login_success">Login Succes</string>
 </resources>

@@ -79,8 +79,6 @@ class HomeFragment : Fragment() {
     private fun initCategory() {
         binding.rvCategory.apply {
             adapter = categoryAdapter
-            layoutManager =
-               LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
     }
 

@@ -91,30 +91,30 @@ class DetailMenuActivity : AppCompatActivity() {
         viewModel.addToCart().observe(this) {
             it.proceedWhen(
                 doOnSuccess = {
-                    showToast(getString(R.string.text_add_to_cart_success))
+                    Toast.makeText(
+                        this,
+                        getString(R.string.text_add_to_cart_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     finish()
                 },
                 doOnError = {
-                    showToast(getString(R.string.add_to_cart_failed))
+                    Toast.makeText(
+                        this,
+                        getString(R.string.add_to_cart_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
                 },
                 doOnLoading = {
-                    showToast(getString(R.string.loading))
+                    Toast.makeText(
+                        this,
+                        getString(R.string.loading),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     binding.menuCart.btnAddToCart.isEnabled = false
                 }
             )
-        }
-    }
-
-    private fun showToast(message: String) {
-        val inflater = layoutInflater
-        val layout: View = inflater.inflate(R.layout.layout_toast_custom, null)
-        val textView: TextView = layout.findViewById(R.id.textViewToast)
-        textView.text = message
-
-        with(Toast(applicationContext)) {
-            duration = Toast.LENGTH_SHORT
-            view = layout
-            show()
         }
     }
 
