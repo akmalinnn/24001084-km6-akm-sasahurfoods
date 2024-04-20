@@ -3,6 +3,7 @@ package com.akmalin.sasahurfoods.presentation.checkout
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,14 +12,19 @@ import com.akmalin.sasahurfoods.R
 import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
 import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
 import com.akmalin.sasahurfoods.data.datasource.cart.CartDataSource
+import com.akmalin.sasahurfoods.data.datasource.menu.MenuDataSource
+import com.akmalin.sasahurfoods.data.datasource.menu.MenuApiDataSource
 import com.akmalin.sasahurfoods.data.datasource.cart.CartDatabaseDataSource
 import com.akmalin.sasahurfoods.data.repository.CartRepository
 import com.akmalin.sasahurfoods.data.repository.CartRepositoryImpl
+import com.akmalin.sasahurfoods.data.repository.MenuRepository
+import com.akmalin.sasahurfoods.data.repository.MenuRepositoryImpl
 import com.akmalin.sasahurfoods.data.repository.UserRepository
 import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
 import com.akmalin.sasahurfoods.data.source.local.database.AppDatabase
 import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseService
 import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
+import com.akmalin.sasahurfoods.data.source.network.services.FoodAppApiService
 import com.akmalin.sasahurfoods.databinding.ActivityCheckoutBinding
 import com.akmalin.sasahurfoods.presentation.checkout.adapter.PriceListAdapter
 import com.akmalin.sasahurfoods.presentation.common.adapter.CartListAdapter
@@ -42,8 +48,12 @@ class CheckoutActivity : AppCompatActivity() {
         val database = AppDatabase.getInstance(this)
         val dataSource: CartDataSource = CartDatabaseDataSource(database.cartDao())
         val cartRepository: CartRepository = CartRepositoryImpl(dataSource)
-        GenericViewModelFactory.create(CheckoutViewModel(cartRepository, firebaseRepository))
+        val apiService = FoodAppApiService.invoke()
+        val menuDataSource: MenuDataSource = MenuApiDataSource(apiService)
+        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource)
+        GenericViewModelFactory.create(CheckoutViewModel(cartRepository, firebaseRepository, menuRepository ))
     }
+
 
     private val adapter: CartListAdapter by lazy {
         CartListAdapter()
@@ -68,11 +78,24 @@ class CheckoutActivity : AppCompatActivity() {
         }
         binding.btnCheckout.setOnClickListener {
             if (viewModel.isLoggedIn()) {
-                viewModel.removeItemCart()
-                displayCheckoutSuccessDialog()
+                doCheckout()
             } else {
                 navigateToLogin()
             }
+        }
+    }
+
+    private fun doCheckout() {
+        viewModel.checkoutCart().observe(this){
+            it.proceedWhen(
+                doOnSuccess = {
+                    displayCheckoutSuccessDialog()
+                    viewModel.removeItemCart()
+                },
+                doOnError = {
+                    Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
@@ -91,6 +114,9 @@ class CheckoutActivity : AppCompatActivity() {
         }
         dialog.show()
     }
+
+
+
 
     private fun navigateToMain() {
         startActivity(Intent(this, MainActivity::class.java).apply {
