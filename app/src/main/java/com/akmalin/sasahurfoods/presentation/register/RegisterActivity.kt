@@ -40,11 +40,11 @@ class RegisterActivity : AppCompatActivity(){
     }
 
     private fun setClickListeners() {
-        binding.btnRegister.setOnClickListener {
+        binding.layoutForm.btnRegister.setOnClickListener {
             doRegister()
         }
-        binding.tvNavToLogin.text = getString(R.string.text_already_has_account)
-        binding.tvNavToLogin.setOnClickListener {
+        binding.layoutForm.tvNavToLogin.text = getString(R.string.text_already_has_account)
+        binding.layoutForm.tvNavToLogin.setOnClickListener {
             navigateToLogin()
         }
     }
@@ -75,22 +75,22 @@ class RegisterActivity : AppCompatActivity(){
         viewModel.doRegister(username, password, email, numberPhone).observe(this) {
             it.proceedWhen(
                 doOnSuccess = {
-                    binding.pbLoading.isVisible = false
-                    binding.btnRegister.isVisible = true
+                    binding.layoutForm.pbLoading.isVisible = false
+                    binding.layoutForm.btnRegister.isVisible = true
                     navigateToMain()
                 },
                 doOnError = {
-                    binding.pbLoading.isVisible = false
-                    binding.btnRegister.isVisible = true
+                    binding.layoutForm.pbLoading.isVisible = false
+                    binding.layoutForm.btnRegister.isVisible = true
                     Toast.makeText(
                         this,
-                        getString(R.string.login_failed, it.exception?.message.orEmpty()),
+                        getString(R.string.login_failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 },
                 doOnLoading = {
-                    binding.pbLoading.isVisible = true
-                    binding.btnRegister.isVisible = false
+                    binding.layoutForm.pbLoading.isVisible = true
+                    binding.layoutForm.btnRegister.isVisible = false
                     Toast.makeText(
                         this,
                         getString(R.string.loading),

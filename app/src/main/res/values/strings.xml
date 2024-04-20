@@ -70,6 +70,7 @@
     <string name="text_btn_register">Register</string>
     <string name="text_already_has_account">Sudah punya akun? Login disini!</string>
     <string name="text_btn_logout">Logout</string>
-    <string name="login_failed">Login Gagal : %1$s</string>
-    <string name="login_success">Login Succes</string>
+    <string name="login_failed">Login Gagal</string>
+    <string name="login_success">Login Sukses</string>
+    <string name="error">Error</string>
 </resources>

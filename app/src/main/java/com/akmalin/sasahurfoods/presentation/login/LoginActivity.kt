@@ -2,6 +2,7 @@ package com.akmalin.sasahurfoods.presentation.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import com.akmalin.sasahurfoods.presentation.main.MainActivity
 import com.akmalin.sasahurfoods.presentation.register.RegisterActivity
 import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
+import com.google.android.material.textfield.TextInputLayout
 
 
 class LoginActivity : AppCompatActivity() {
@@ -36,7 +38,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
         setClickListener()
     }
 
@@ -53,7 +54,16 @@ class LoginActivity : AppCompatActivity() {
     private fun inputLogin() {
         val email = binding.layoutFormLogin.etEmailLogin.text.toString().trim()
         val password = binding.layoutFormLogin.etPasswordLogin.text.toString().trim()
-        doLogin(email, password)
+
+        if (isEmailAndPasswordNotEmpty(email, password)) {
+            doLogin(email, password)
+        } else {
+            Toast.makeText(
+                this,
+                getString(R.string.login_failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun doLogin(email: String, password: String) {
@@ -85,6 +95,37 @@ class LoginActivity : AppCompatActivity() {
             )
         }
     }
+
+    private fun isEmailAndPasswordNotEmpty(email: String, password: String): Boolean {
+        val isEmailValid = checkEmailValidation(email)
+        val isPasswordValid = checkPasswordValidation(password)
+
+        return isEmailValid && isPasswordValid
+    }
+
+
+    private fun checkEmailValidation(email: String): Boolean {
+        return if (email.isEmpty()) {
+            binding.layoutFormLogin.tilEmailLogin.isErrorEnabled = true
+            binding.layoutFormLogin.tilEmailLogin.error = getString(R.string.text_error_email_empty)
+            false
+        } else {
+            binding.layoutFormLogin.tilEmailLogin.isErrorEnabled = false
+            true
+        }
+    }
+
+    private fun checkPasswordValidation(password: String): Boolean {
+        return if (password.isEmpty()) {
+            binding.layoutFormLogin.tilPasswordLogin.isErrorEnabled = true
+            binding.layoutFormLogin.tilPasswordLogin.error = getString(R.string.text_error_password_empty)
+            false
+        } else {
+            binding.layoutFormLogin.tilPasswordLogin.isErrorEnabled = false
+            true
+        }
+    }
+
 
     private fun navigateToMain() {
         startActivity(Intent(this, MainActivity::class.java).apply {
