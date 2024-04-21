@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
@@ -49,18 +50,12 @@ class ProfileFragment : Fragment() {
 
 
         private fun loadProfileData() {
-            viewModel.profileData.observe(viewLifecycleOwner) {
-                binding.ivProfileImage.load(it.profileImg) {
-                    crossfade(true)
-                    error(R.drawable.ic_tab_profile)
-                    transformations(CircleCropTransformation())
-                }
-                binding.nameEdit.setText(it.name)
-                binding.usernameEdit.setText(it.username)
-                binding.emailEdit.setText(it.email)
+            viewModel.getCurrentUser()?.let {
+                binding.etUsernameEdit.setText(it.username)
+                binding.etEmailEdit.setText(it.email)
             }
-
         }
+
 
 
     private fun setClickListener() {
@@ -70,9 +65,9 @@ class ProfileFragment : Fragment() {
         }
         binding.btnLogout.setOnClickListener{
             viewModel.doLogout()
-            navigateToLogin()
             val navController = findNavController()
             navController.navigate(R.id.menu_tab_home)
+            Toast.makeText(activity,getString(R.string.logout_success), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -87,9 +82,8 @@ class ProfileFragment : Fragment() {
     private fun observeEditMode() {
         viewModel.isEditMode.observe(viewLifecycleOwner){ isEditMode ->
             isEditMode?.let {
-                binding.emailEdit.isEnabled = it
-                binding.nameEdit.isEnabled = it
-                binding.usernameEdit.isEnabled = it
+                binding.etEmailEdit.isEnabled = it
+                binding.etUsernameEdit.isEnabled = it
 
             }
         }

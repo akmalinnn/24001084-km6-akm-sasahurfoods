@@ -11,7 +11,8 @@
     <string name="_0">0</string>
     <string name="add_value">+</string>
     <string name="decrease_value">-</string>
-    <string name="text_name">Hi Akmal! 👋</string>
+    <string name="text_name">Hi %s 👋</string>
+    <string name="text_name_user">Hi 👋</string>
     <string name="text_greetings">Makan apa hari ini...?</string>
     <string name="text_desc_banner">Promo Bulan ramadan berkah, dapatkan diskon hingga 50%, mulai dari makanan, minuman, dan jajanan! </string>
     <string name="title_desc">Diskon Cepat, Hanya Hari Ini!! </string>
@@ -72,5 +73,8 @@
     <string name="text_btn_logout">Logout</string>
     <string name="login_failed">Login Gagal</string>
     <string name="login_success">Login Sukses</string>
+    <string name="register_failed">Register Gagal</string>
+    <string name="register_success">Register Sukses</string>
+    <string name="logout_success">logout Sukses</string>
     <string name="error">Error</string>
 </resources>

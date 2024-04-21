@@ -77,6 +77,11 @@ class RegisterActivity : AppCompatActivity(){
                 doOnSuccess = {
                     binding.layoutForm.pbLoading.isVisible = false
                     binding.layoutForm.btnRegister.isVisible = true
+                    Toast.makeText(
+                        this,
+                        getString(R.string.register_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     navigateToMain()
                 },
                 doOnError = {
@@ -84,7 +89,7 @@ class RegisterActivity : AppCompatActivity(){
                     binding.layoutForm.btnRegister.isVisible = true
                     Toast.makeText(
                         this,
-                        getString(R.string.login_failed),
+                        getString(R.string.register_failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 },
