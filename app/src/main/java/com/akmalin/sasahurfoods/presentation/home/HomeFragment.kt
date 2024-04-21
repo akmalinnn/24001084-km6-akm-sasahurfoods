@@ -10,13 +10,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.akmalin.sasahurfoods.R
+import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
+import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
 import com.akmalin.sasahurfoods.data.datasource.category.CategoryApiDataSource
 import com.akmalin.sasahurfoods.data.datasource.menu.MenuApiDataSource
 import com.akmalin.sasahurfoods.data.model.Category
 import com.akmalin.sasahurfoods.data.model.Menu
 import com.akmalin.sasahurfoods.data.repository.CategoryRepositoryImpl
 import com.akmalin.sasahurfoods.data.repository.MenuRepositoryImpl
+import com.akmalin.sasahurfoods.data.repository.UserRepository
+import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
 import com.akmalin.sasahurfoods.data.source.local.pref.UserPreferenceImpl
+import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
 import com.akmalin.sasahurfoods.data.source.network.services.FoodAppApiService
 import com.akmalin.sasahurfoods.databinding.FragmentHomeBinding
 import com.akmalin.sasahurfoods.presentation.detailfood.DetailMenuActivity
@@ -43,12 +48,15 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels {
         val service = FoodAppApiService.invoke()
+        val serviceFirebase = FirebaseServiceImpl()
         val menuDataSource = MenuApiDataSource(service)
         val menuRepository = MenuRepositoryImpl(menuDataSource)
         val categoryDataSource = CategoryApiDataSource(service)
         val userPreference = UserPreferenceImpl(requireContext())
         val categoryRepository = CategoryRepositoryImpl(categoryDataSource)
-        GenericViewModelFactory.create(HomeViewModel(categoryRepository, menuRepository, userPreference))
+        val dataSource: AuthDataSource = FirebaseAuthDataSource(serviceFirebase)
+        val repository: UserRepository = UserRepositoryImpl(dataSource)
+        GenericViewModelFactory.create(HomeViewModel(categoryRepository, menuRepository, userPreference, repository))
     }
 
     override fun onCreateView(
@@ -61,6 +69,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadProfileData()
         observeGridMode()
         initCategory()
         initMenu()
@@ -132,6 +141,17 @@ class HomeFragment : Fragment() {
             )
         }
     }
+
+    private fun loadProfileData() {
+        if (viewModel.isLoggedIn()) {
+            viewModel.getCurrentUser()?.let { user ->
+                binding.layoutHeader.tvProfileName.text = getString(R.string.text_name, user.username)
+            }
+        } else {
+            binding.layoutHeader.tvProfileName.text = getString(R.string.text_name_user)
+        }
+    }
+
 
     private fun bindMenuList(data : List<Menu>) {
         menuAdapter.submitData(data)

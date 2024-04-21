@@ -3,17 +3,15 @@ package com.akmalin.sasahurfoods.presentation.profile
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.akmalin.sasahurfoods.data.model.Profile
+import com.akmalin.sasahurfoods.data.model.User
 import com.akmalin.sasahurfoods.data.repository.UserRepository
 
 class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
-    val profileData = MutableLiveData(
-        Profile.Profile(
-            name = "Akmal Nafis",
-            username = "akmalinnnn",
-            email = "akmalinnn@gmail.com",
-            profileImg = "https://avatars.githubusercontent.com/u/22763869?v=4"
-        )
-    )
+
+
+    fun getCurrentUser(): User? {
+        return repository.getCurrentUser()
+    }
 
     val isEditMode = MutableLiveData(false)
 
@@ -28,5 +26,6 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
 
     fun doLogout() {
         repository.doLogout()
+
     }
 }
