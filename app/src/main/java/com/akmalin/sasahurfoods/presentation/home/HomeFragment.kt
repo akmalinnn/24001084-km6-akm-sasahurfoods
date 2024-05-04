@@ -4,38 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.akmalin.sasahurfoods.R
-import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
-import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
-import com.akmalin.sasahurfoods.data.datasource.category.CategoryApiDataSource
-import com.akmalin.sasahurfoods.data.datasource.menu.MenuApiDataSource
 import com.akmalin.sasahurfoods.data.model.Category
 import com.akmalin.sasahurfoods.data.model.Menu
-import com.akmalin.sasahurfoods.data.repository.CategoryRepositoryImpl
-import com.akmalin.sasahurfoods.data.repository.MenuRepositoryImpl
-import com.akmalin.sasahurfoods.data.repository.UserRepository
-import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
-import com.akmalin.sasahurfoods.data.source.local.pref.UserPreferenceImpl
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
-import com.akmalin.sasahurfoods.data.source.network.services.FoodAppApiService
 import com.akmalin.sasahurfoods.databinding.FragmentHomeBinding
 import com.akmalin.sasahurfoods.presentation.detailfood.DetailMenuActivity
 import com.akmalin.sasahurfoods.presentation.home.adapter.CategoryAdapter
 import com.akmalin.sasahurfoods.presentation.home.adapter.MenuAdapter
-import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
-
     private lateinit var binding: FragmentHomeBinding
+    private val homeViewModel: HomeViewModel by viewModel()
 
     private val menuAdapter: MenuAdapter by lazy {
-        MenuAdapter(viewModel.getListMode()) {
+        MenuAdapter(homeViewModel.getListMode()) {
             navigateToDetail(it)
         }
     }
@@ -46,28 +34,19 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val viewModel: HomeViewModel by viewModels {
-        val service = FoodAppApiService.invoke()
-        val serviceFirebase = FirebaseServiceImpl()
-        val menuDataSource = MenuApiDataSource(service)
-        val menuRepository = MenuRepositoryImpl(menuDataSource)
-        val categoryDataSource = CategoryApiDataSource(service)
-        val userPreference = UserPreferenceImpl(requireContext())
-        val categoryRepository = CategoryRepositoryImpl(categoryDataSource)
-        val dataSource: AuthDataSource = FirebaseAuthDataSource(serviceFirebase)
-        val repository: UserRepository = UserRepositoryImpl(dataSource)
-        GenericViewModelFactory.create(HomeViewModel(categoryRepository, menuRepository, userPreference, repository))
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         loadProfileData()
         observeGridMode()
@@ -92,7 +71,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeGridMode() {
-        viewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
+        homeViewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
             setButtonImage(isUsingGridMode)
             changeLayoutMode(isUsingGridMode)
         }
@@ -102,14 +81,22 @@ class HomeFragment : Fragment() {
         categoryAdapter.submitData(data)
     }
 
-
-
     private fun getCategoryList() {
-        viewModel.getCategories().observe(viewLifecycleOwner) {
+        homeViewModel.getCategories().observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnSuccess = {
                     it.payload?.let { data -> bindCategory(data) }
-                }
+                    binding.layoutHomeStateCategory.pbLoading.isVisible = false
+                    binding.layoutHomeStateCategory.tvError.isVisible = false
+                },
+                doOnLoading = {
+                    binding.layoutHomeStateCategory.pbLoading.isVisible = true
+                    binding.layoutHomeStateCategory.tvError.isVisible = false
+                },
+                doOnError = {
+                    binding.layoutHomeStateCategory.pbLoading.isVisible = false
+                    binding.layoutHomeStateCategory.tvError.isVisible = true
+                },
             )
         }
     }
@@ -129,22 +116,31 @@ class HomeFragment : Fragment() {
         binding.layoutHeader.layoutBanner.bgHomeBanner.load(getString(R.string.home_header_banner))
     }
 
-
     private fun getMenuList(name: String? = null) {
-        viewModel.getMenus(name).observe(viewLifecycleOwner) {
+        homeViewModel.getMenus(name).observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnSuccess = {
                     it.payload?.let { data ->
                         bindMenuList(data)
+                        binding.layoutHomeStateMenu.pbLoading.isVisible = false
+                        binding.layoutHomeStateMenu.tvError.isVisible = false
                     }
-                }
+                },
+                doOnLoading = {
+                    binding.layoutHomeStateMenu.pbLoading.isVisible = true
+                    binding.layoutHomeStateMenu.tvError.isVisible = false
+                },
+                doOnError = {
+                    binding.layoutHomeStateMenu.pbLoading.isVisible = false
+                    binding.layoutHomeStateMenu.tvError.isVisible = true
+                },
             )
         }
     }
 
     private fun loadProfileData() {
-        if (viewModel.isLoggedIn()) {
-            viewModel.getCurrentUser()?.let { user ->
+        if (homeViewModel.isLoggedIn()) {
+            homeViewModel.getCurrentUser()?.let { user ->
                 binding.layoutHeader.tvProfileName.text = getString(R.string.text_name, user.username)
             }
         } else {
@@ -152,8 +148,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-    private fun bindMenuList(data : List<Menu>) {
+    private fun bindMenuList(data: List<Menu>) {
         menuAdapter.submitData(data)
     }
 
@@ -167,7 +162,7 @@ class HomeFragment : Fragment() {
 
     private fun setClickActionMenu() {
         binding.listMenu.ibSortMenu.setOnClickListener {
-            viewModel.changeListMode()
+            homeViewModel.changeListMode()
         }
     }
 }

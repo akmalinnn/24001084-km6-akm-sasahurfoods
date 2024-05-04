@@ -2,45 +2,35 @@ package com.akmalin.sasahurfoods.presentation.profile
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.akmalin.sasahurfoods.R
-import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
-import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
-import com.akmalin.sasahurfoods.data.repository.UserRepository
-import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseService
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
-import com.akmalin.sasahurfoods.databinding.FragmentCartBinding
 import com.akmalin.sasahurfoods.databinding.FragmentProfileBinding
-import com.akmalin.sasahurfoods.presentation.login.LoginActivity
-import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
+import com.akmalin.sasahurfoods.presentation.auth.login.LoginActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProfileFragment : Fragment() {
-
     private lateinit var binding: FragmentProfileBinding
-    private val viewModel: ProfileViewModel by viewModels{
-        val service = FirebaseServiceImpl()
-        val dataSource: AuthDataSource = FirebaseAuthDataSource(service)
-        val repository: UserRepository = UserRepositoryImpl(dataSource)
-        GenericViewModelFactory.create(ProfileViewModel(repository))
-    }
+
+    private val profileViewModel: ProfileViewModel by viewModel()
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         loadProfileData()
         setClickListener()
@@ -48,57 +38,55 @@ class ProfileFragment : Fragment() {
         observeLoginStatus()
     }
 
-
-        private fun loadProfileData() {
-            viewModel.getCurrentUser()?.let {
-                binding.etUsernameEdit.setText(it.username)
-                binding.etEmailEdit.setText(it.email)
-            }
+    private fun loadProfileData() {
+        profileViewModel.getCurrentUser()?.let {
+            binding.etUsernameEdit.setText(it.username)
+            binding.etEmailEdit.setText(it.email)
         }
-
-
+    }
 
     private fun setClickListener() {
         binding.btnEdit.setOnClickListener {
-            viewModel.changeEditMode()
+            profileViewModel.changeEditMode()
             setButtonText()
         }
-        binding.btnLogout.setOnClickListener{
-            viewModel.doLogout()
+        binding.btnLogout.setOnClickListener {
+            profileViewModel.doLogout()
             val navController = findNavController()
             navController.navigate(R.id.menu_tab_home)
-            Toast.makeText(activity,getString(R.string.logout_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, getString(R.string.logout_success), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setButtonText() {
-        binding.btnEdit.text = if (viewModel.isEditMode.value == false) {
-            getString(R.string.save)
-        } else {
-            getString(R.string.edit)
-        }
+        binding.btnEdit.text =
+            if (profileViewModel.isEditMode.value == false) {
+                getString(R.string.save)
+            } else {
+                getString(R.string.edit)
+            }
     }
 
     private fun observeEditMode() {
-        viewModel.isEditMode.observe(viewLifecycleOwner){ isEditMode ->
+        profileViewModel.isEditMode.observe(viewLifecycleOwner) { isEditMode ->
             isEditMode?.let {
                 binding.etEmailEdit.isEnabled = it
                 binding.etUsernameEdit.isEnabled = it
-
             }
         }
     }
 
     private fun observeLoginStatus() {
-        if (!viewModel.isLoggedIn()) {
+        if (!profileViewModel.isLoggedIn()) {
             navigateToLogin()
         }
     }
 
     private fun navigateToLogin() {
-        startActivity(Intent(requireContext(), LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        })
+        startActivity(
+            Intent(requireContext(), LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            },
+        )
     }
 }
-

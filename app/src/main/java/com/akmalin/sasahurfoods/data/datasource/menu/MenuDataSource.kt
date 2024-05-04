@@ -7,5 +7,5 @@ import com.akmalin.sasahurfoods.data.source.network.model.order.CheckoutResponse
 interface MenuDataSource {
     suspend fun getMenuData(categorySlug: String? = null): MenusResponse
 
-    suspend fun createOrder ( payload: CheckoutRequestPayload) : CheckoutResponse
+    suspend fun createOrder(payload: CheckoutRequestPayload): CheckoutResponse
 }

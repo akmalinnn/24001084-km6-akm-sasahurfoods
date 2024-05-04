@@ -1,39 +1,23 @@
-package com.akmalin.sasahurfoods.presentation.login
+package com.akmalin.sasahurfoods.presentation.auth.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.akmalin.sasahurfoods.R
-import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
-import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
-import com.akmalin.sasahurfoods.data.repository.UserRepository
-import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseService
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
 import com.akmalin.sasahurfoods.databinding.ActivityLoginBinding
+import com.akmalin.sasahurfoods.presentation.auth.register.RegisterActivity
 import com.akmalin.sasahurfoods.presentation.main.MainActivity
-import com.akmalin.sasahurfoods.presentation.register.RegisterActivity
-import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
-import com.google.android.material.textfield.TextInputLayout
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : AppCompatActivity() {
-
     private val binding: ActivityLoginBinding by lazy {
         ActivityLoginBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: LoginViewModel by viewModels {
-        val service: FirebaseService = FirebaseServiceImpl()
-        val dataSource: AuthDataSource = FirebaseAuthDataSource(service)
-        val repository: UserRepository = UserRepositoryImpl(dataSource)
-        GenericViewModelFactory.create(LoginViewModel(repository))
-    }
+    private val loginViewModel: LoginViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,13 +45,16 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(
                 this,
                 getString(R.string.login_failed),
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
         }
     }
 
-    private fun doLogin(email: String, password: String) {
-        viewModel.doLogin(email, password).observe(this){result ->
+    private fun doLogin(
+        email: String,
+        password: String,
+    ) {
+        loginViewModel.doLogin(email, password).observe(this) { result ->
             result.proceedWhen(
                 doOnSuccess = {
                     binding.layoutFormLogin.pbLogin.isVisible = false
@@ -75,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(
                         this,
                         getString(R.string.login_success),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     navigateToMain()
                 },
@@ -89,20 +76,22 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(
                         this,
                         getString(R.string.login_failed),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
-                }
+                },
             )
         }
     }
 
-    private fun isEmailAndPasswordNotEmpty(email: String, password: String): Boolean {
+    private fun isEmailAndPasswordNotEmpty(
+        email: String,
+        password: String,
+    ): Boolean {
         val isEmailValid = checkEmailValidation(email)
         val isPasswordValid = checkPasswordValidation(password)
 
         return isEmailValid && isPasswordValid
     }
-
 
     private fun checkEmailValidation(email: String): Boolean {
         return if (email.isEmpty()) {
@@ -126,16 +115,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        })
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            },
+        )
     }
 
     private fun navigateRegister() {
-        startActivity(Intent(this, RegisterActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        })
+        startActivity(
+            Intent(this, RegisterActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+        )
     }
 }

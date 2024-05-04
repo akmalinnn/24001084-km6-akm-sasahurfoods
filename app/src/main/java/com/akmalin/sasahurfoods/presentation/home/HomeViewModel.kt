@@ -15,8 +15,8 @@ class HomeViewModel(
     private val categoryRepository: CategoryRepository,
     private val menuRepository: MenuRepository,
     private val userPreference: UserPreference,
-    private val repository: UserRepository
-) : ViewModel(){
+    private val repository: UserRepository,
+) : ViewModel() {
     private val _isUsingGridMode = MutableLiveData(userPreference.isUsingGridMode())
     val isUsingGridMode: LiveData<Boolean>
         get() = _isUsingGridMode
@@ -31,8 +31,8 @@ class HomeViewModel(
         userPreference.setUsingGridMode(!currentValue)
     }
 
-    fun getMenus(categoryName: String? = null) =
-        menuRepository.getMenus(categoryName).asLiveData(Dispatchers.IO)
+    fun getMenus(categoryName: String? = null) = menuRepository.getMenus(categoryName).asLiveData(Dispatchers.IO)
+
     fun getCategories() = categoryRepository.getCategories().asLiveData(Dispatchers.IO)
 
     fun getCurrentUser(): User? {
@@ -42,5 +42,4 @@ class HomeViewModel(
     fun isLoggedIn(): Boolean {
         return repository.isLoggedIn()
     }
-
 }

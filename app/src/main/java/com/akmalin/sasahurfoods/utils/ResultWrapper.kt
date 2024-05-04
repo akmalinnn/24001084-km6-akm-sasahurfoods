@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import java.lang.Exception
 
-
 sealed class ResultWrapper<T>(
     val payload: T? = null,
     val message: String? = null,
@@ -22,7 +21,6 @@ sealed class ResultWrapper<T>(
 
     class Idle<T>(data: T? = null) : ResultWrapper<T>(data)
 }
-
 
 fun <T> ResultWrapper<T>.proceedWhen(
     doOnSuccess: ((resource: ResultWrapper<T>) -> Unit)? = null,
@@ -90,7 +88,7 @@ fun <T> proceedFlow(block: suspend () -> T): Flow<ResultWrapper<T>> {
                 ResultWrapper.Empty(result)
             } else {
                 ResultWrapper.Success(result)
-            }
+            },
         )
     }.catch { e ->
         emit(ResultWrapper.Error(exception = Exception(e)))

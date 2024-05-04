@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.register.RegisterActivity">
+    tools:context=".presentation.auth.register.RegisterActivity">
 
     <include
         android:id="@+id/layout_form"

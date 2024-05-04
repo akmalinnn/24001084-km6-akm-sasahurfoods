@@ -14,18 +14,19 @@ import java.lang.IllegalStateException
 
 class DetailMenuViewModel(
     private val extras: Bundle?,
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
 ) : ViewModel() {
-
     val menu = extras?.getParcelable<Menu>(DetailMenuActivity.EXTRAS_DETAIL_DATA)
 
-    val menuCountLiveData = MutableLiveData(0).apply {
-        postValue(0)
-    }
+    val menuCountLiveData =
+        MutableLiveData(0).apply {
+            postValue(0)
+        }
 
-    val priceLiveData = MutableLiveData<Double>().apply {
-        postValue(0.0)
-    }
+    val priceLiveData =
+        MutableLiveData<Double>().apply {
+            postValue(0.0)
+        }
 
     fun add() {
         val count = (menuCountLiveData.value ?: 0) + 1

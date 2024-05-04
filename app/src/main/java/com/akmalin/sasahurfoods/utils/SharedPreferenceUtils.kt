@@ -1,6 +1,5 @@
 package com.akmalin.sasahurfoods.utils
 
-
 import android.content.Context
 import android.content.SharedPreferences
 

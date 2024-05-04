@@ -8,11 +8,10 @@ import com.akmalin.sasahurfoods.data.model.Menu
 import com.akmalin.sasahurfoods.databinding.ItemMenuGridBinding
 import com.akmalin.sasahurfoods.utils.toIndonesianFormat
 
-class MenuGridItemViewHolder (
+class MenuGridItemViewHolder(
     private val binding: ItemMenuGridBinding,
-    private val itemClick: (Menu) -> Unit
+    private val itemClick: (Menu) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root), ViewHolderBinder<Menu> {
-
     override fun bind(item: Menu) {
         item.let {
             binding.ivMenuImage.load(it.imgUrl) {
