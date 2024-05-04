@@ -1,37 +1,26 @@
-package com.akmalin.sasahurfoods.presentation.register
+package com.akmalin.sasahurfoods.presentation.auth.register
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.akmalin.sasahurfoods.R
-import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
-import com.akmalin.sasahurfoods.data.datasource.auth.FirebaseAuthDataSource
-import com.akmalin.sasahurfoods.data.repository.UserRepository
-import com.akmalin.sasahurfoods.data.repository.UserRepositoryImpl
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseService
-import com.akmalin.sasahurfoods.data.source.network.firebase.FirebaseServiceImpl
 import com.akmalin.sasahurfoods.databinding.ActivityRegisterBinding
-import com.akmalin.sasahurfoods.presentation.login.LoginActivity
+import com.akmalin.sasahurfoods.presentation.auth.login.LoginActivity
 import com.akmalin.sasahurfoods.presentation.main.MainActivity
-import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
 import com.google.android.material.textfield.TextInputLayout
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RegisterActivity : AppCompatActivity(){
+class RegisterActivity : AppCompatActivity() {
     private val binding: ActivityRegisterBinding by lazy {
         ActivityRegisterBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: RegisterViewModel by viewModels {
-        val s: FirebaseService = FirebaseServiceImpl()
-        val ds: AuthDataSource = FirebaseAuthDataSource(s)
-        val r: UserRepository = UserRepositoryImpl(ds)
-        GenericViewModelFactory.create(RegisterViewModel(r))
-    }
+    private val registerViewModel: RegisterViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -50,11 +39,12 @@ class RegisterActivity : AppCompatActivity(){
     }
 
     private fun navigateToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java).apply {
-              flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-          })
+        startActivity(
+            Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+        )
     }
-
 
     private fun doRegister() {
         if (isFormValid()) {
@@ -70,9 +60,9 @@ class RegisterActivity : AppCompatActivity(){
         username: String,
         password: String,
         email: String,
-        numberPhone: String
+        numberPhone: String,
     ) {
-        viewModel.doRegister(username, password, email, numberPhone).observe(this) {
+        registerViewModel.doRegister(username, password, email, numberPhone).observe(this) {
             it.proceedWhen(
                 doOnSuccess = {
                     binding.layoutForm.pbLoading.isVisible = false
@@ -80,7 +70,7 @@ class RegisterActivity : AppCompatActivity(){
                     Toast.makeText(
                         this,
                         getString(R.string.register_success),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     navigateToMain()
                 },
@@ -90,7 +80,7 @@ class RegisterActivity : AppCompatActivity(){
                     Toast.makeText(
                         this,
                         getString(R.string.register_failed),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                 },
                 doOnLoading = {
@@ -99,17 +89,19 @@ class RegisterActivity : AppCompatActivity(){
                     Toast.makeText(
                         this,
                         getString(R.string.loading),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
-                }
+                },
             )
         }
     }
 
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        })
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            },
+        )
     }
 
     private fun isFormValid(): Boolean {
@@ -119,18 +111,23 @@ class RegisterActivity : AppCompatActivity(){
         val email = binding.layoutForm.etEmailRegis.text.toString().trim()
         val numberPhone = binding.layoutForm.etNumberPhoneRegis.text.toString().trim()
 
-        return checkNameValidation(username) && checkPasswordValidation(
-            password,
-            binding.layoutForm.tilPasswordRegis
-        ) &&
-                checkEmailValidation(email) && checkPasswordValidation(
-            confirmPassword,
-            binding.layoutForm.tilConfirmPasswordRegis
-        ) &&
-                checkPwdAndConfirmPwd(password, confirmPassword)
+        return checkNameValidation(username) &&
+            checkPasswordValidation(
+                password,
+                binding.layoutForm.tilPasswordRegis,
+            ) &&
+            checkEmailValidation(email) &&
+            checkPasswordValidation(
+                confirmPassword,
+                binding.layoutForm.tilConfirmPasswordRegis,
+            ) &&
+            checkPwdAndConfirmPwd(password, confirmPassword)
     }
 
-    private fun checkPwdAndConfirmPwd(password: String, confirmPassword: String): Boolean {
+    private fun checkPwdAndConfirmPwd(
+        password: String,
+        confirmPassword: String,
+    ): Boolean {
         return if (password != confirmPassword) {
             binding.layoutForm.tilPasswordRegis.isErrorEnabled = true
             binding.layoutForm.tilPasswordRegis.error =
@@ -163,7 +160,7 @@ class RegisterActivity : AppCompatActivity(){
 
     private fun checkPasswordValidation(
         confirmPassword: String,
-        textInputLayout: TextInputLayout
+        textInputLayout: TextInputLayout,
     ): Boolean {
         return if (confirmPassword.isEmpty()) {
             textInputLayout.isErrorEnabled = true

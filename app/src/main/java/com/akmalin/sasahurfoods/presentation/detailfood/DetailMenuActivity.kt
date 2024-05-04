@@ -4,49 +4,39 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.akmalin.sasahurfoods.R
-import com.akmalin.sasahurfoods.data.datasource.cart.CartDataSource
-import com.akmalin.sasahurfoods.data.datasource.cart.CartDatabaseDataSource
 import com.akmalin.sasahurfoods.data.model.Menu
-import com.akmalin.sasahurfoods.data.repository.CartRepository
-import com.akmalin.sasahurfoods.data.repository.CartRepositoryImpl
-import com.akmalin.sasahurfoods.data.source.local.database.AppDatabase
 import com.akmalin.sasahurfoods.databinding.ActivityDetailMenuBinding
-import com.akmalin.sasahurfoods.utils.GenericViewModelFactory
 import com.akmalin.sasahurfoods.utils.proceedWhen
 import com.akmalin.sasahurfoods.utils.toIndonesianFormat
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class DetailMenuActivity : AppCompatActivity() {
-
     lateinit var menu: Menu
     private val binding: ActivityDetailMenuBinding by lazy {
         ActivityDetailMenuBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: DetailMenuViewModel by viewModels {
-        val db = AppDatabase.getInstance(this)
-        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
-        val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(DetailMenuViewModel(intent?.extras, rp))
+    private val viewModel: DetailMenuViewModel by viewModel {
+        parametersOf(intent.extras)
     }
-
 
     companion object {
         const val EXTRAS_DETAIL_DATA = "EXTRAS_DETAIL_DATA"
-        fun startActivity(context: Context, menu: Menu) {
+
+        fun startActivity(
+            context: Context,
+            menu: Menu,
+        ) {
             val intent = Intent(context, DetailMenuActivity::class.java)
             intent.putExtra(EXTRAS_DETAIL_DATA, menu)
             context.startActivity(intent)
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +44,6 @@ class DetailMenuActivity : AppCompatActivity() {
         getIntentData()
         setClickListener()
         observeData()
-
     }
 
     private fun getIntentData() {
@@ -70,7 +59,6 @@ class DetailMenuActivity : AppCompatActivity() {
             startActivity(mapIntent)
         }
     }
-
 
     private fun setClickListener() {
         binding.menuDetail.ivBack.setOnClickListener {
@@ -94,7 +82,7 @@ class DetailMenuActivity : AppCompatActivity() {
                     Toast.makeText(
                         this,
                         getString(R.string.text_add_to_cart_success),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     finish()
                 },
@@ -102,7 +90,7 @@ class DetailMenuActivity : AppCompatActivity() {
                     Toast.makeText(
                         this,
                         getString(R.string.add_to_cart_failed),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     finish()
                 },
@@ -110,15 +98,13 @@ class DetailMenuActivity : AppCompatActivity() {
                     Toast.makeText(
                         this,
                         getString(R.string.loading),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     binding.menuCart.btnAddToCart.isEnabled = false
-                }
+                },
             )
         }
     }
-
-
 
     private fun observeData() {
         viewModel.priceLiveData.observe(this) { price ->

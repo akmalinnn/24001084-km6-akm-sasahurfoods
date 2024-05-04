@@ -2,13 +2,10 @@ package com.akmalin.sasahurfoods.presentation.profile
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.akmalin.sasahurfoods.data.model.Profile
 import com.akmalin.sasahurfoods.data.model.User
 import com.akmalin.sasahurfoods.data.repository.UserRepository
 
 class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
-
-
     fun getCurrentUser(): User? {
         return repository.getCurrentUser()
     }
@@ -26,6 +23,5 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
 
     fun doLogout() {
         repository.doLogout()
-
     }
 }

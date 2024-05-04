@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,9 +24,9 @@
             android:name=".presentation.detailfood.DetailMenuActivity"
             android:exported="false" />
 
-        <activity android:name=".presentation.login.LoginActivity"/>
+        <activity android:name=".presentation.auth.login.LoginActivity"/>
 
-        <activity android:name=".presentation.register.RegisterActivity"/>
+        <activity android:name=".presentation.auth.register.RegisterActivity"/>
 
         <activity
             android:name=".presentation.main.MainActivity"

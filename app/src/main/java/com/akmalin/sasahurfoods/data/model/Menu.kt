@@ -7,11 +7,10 @@ import java.util.UUID
 @Parcelize
 data class Menu(
     var id: String? = UUID.randomUUID().toString(),
-    var imgUrl : String,
+    var imgUrl: String,
     var name: String,
     var price: Double,
     var desc: String,
     var location: String,
     var locUrl: String,
-): Parcelable
-
+) : Parcelable
