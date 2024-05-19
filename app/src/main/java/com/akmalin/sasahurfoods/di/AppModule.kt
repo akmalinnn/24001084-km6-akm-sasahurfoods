@@ -108,10 +108,10 @@ object AppModule {
                 CategoryRepositoryImpl(get())
             }
             single<UserRepository> {
-                UserRepositoryImpl(get())
+                UserRepositoryImpl(get(), get())
             }
             single<UserRepository> {
-                UserRepositoryImpl(get())
+                UserRepositoryImpl(get(), get())
             }
         }
 

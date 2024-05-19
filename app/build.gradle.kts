@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.crashlytics)
+    testImplementation("junit:junit:4.12")
     ksp(libs.room.compiler)
     implementation(libs.coroutine.core)
     implementation(libs.coroutine.android)
@@ -110,4 +111,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.koin.android)
+
+    androidTestImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent)
+    testImplementation(libs.coroutine.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.core.testing)
 }
