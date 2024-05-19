@@ -21,7 +21,7 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
         return repository.isLoggedIn()
     }
 
-    fun doLogout() {
-        repository.doLogout()
+    fun doLogout(): Boolean {
+        return repository.doLogout()
     }
 }

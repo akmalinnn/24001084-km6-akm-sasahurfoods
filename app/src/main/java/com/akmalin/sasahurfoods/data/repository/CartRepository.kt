@@ -12,6 +12,7 @@ import com.akmalin.sasahurfoods.utils.proceed
 import com.akmalin.sasahurfoods.utils.proceedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -38,7 +39,7 @@ interface CartRepository {
 
     suspend fun checkout(items: List<Cart>): Flow<ResultWrapper<Boolean>>
 
-    suspend fun deleteAll()
+    suspend fun deleteAll(): Flow<ResultWrapper<Boolean>>
 }
 
 class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepository {
@@ -55,6 +56,8 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
                 // map to check when list is empty
                 if (it.payload?.first?.isEmpty() == false) return@map it
                 ResultWrapper.Empty(it.payload)
+            }.catch {
+                emit(ResultWrapper.Error(Exception(it)))
             }.onStart {
                 emit(ResultWrapper.Loading())
                 delay(2000)
@@ -76,6 +79,8 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
                 // map to check when list is empty
                 if (it.payload?.first?.isEmpty() == false) return@map it
                 ResultWrapper.Empty(it.payload)
+            }.catch {
+                emit(ResultWrapper.Error(Exception(it)))
             }.onStart {
                 emit(ResultWrapper.Loading())
                 delay(2000)
@@ -138,8 +143,11 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
         return proceedFlow { cartDataSource.deleteCart(item.toCartEntity()) > 0 }
     }
 
-    override suspend fun deleteAll() {
-        cartDataSource.deleteAll()
+    override suspend fun deleteAll(): Flow<ResultWrapper<Boolean>> {
+        return proceedFlow {
+            cartDataSource.deleteAll()
+            true
+        }
     }
 
     override suspend fun checkout(items: List<Cart>): Flow<ResultWrapper<Boolean>> {

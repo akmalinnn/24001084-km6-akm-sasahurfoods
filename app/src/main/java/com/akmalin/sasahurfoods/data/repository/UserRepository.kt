@@ -1,6 +1,7 @@
 package com.akmalin.sasahurfoods.data.repository
 
 import com.akmalin.sasahurfoods.data.datasource.auth.AuthDataSource
+import com.akmalin.sasahurfoods.data.datasource.user.UserDataSource
 import com.akmalin.sasahurfoods.data.model.User
 import com.akmalin.sasahurfoods.utils.ResultWrapper
 import com.akmalin.sasahurfoods.utils.proceedFlow
@@ -35,9 +36,16 @@ interface UserRepository {
     fun isLoggedIn(): Boolean
 
     fun getCurrentUser(): User?
+
+    fun isUsingGridMode(): Boolean
+
+    fun setUsingGridMode(isUsingGridMode: Boolean)
 }
 
-class UserRepositoryImpl(private val dataSource: AuthDataSource) : UserRepository {
+class UserRepositoryImpl(
+    private val dataSource: AuthDataSource,
+    private val userDataSource: UserDataSource,
+) : UserRepository {
     override fun doLogin(
         email: String,
         password: String,
@@ -59,6 +67,14 @@ class UserRepositoryImpl(private val dataSource: AuthDataSource) : UserRepositor
                 numberPhone = numberPhone,
             )
         }
+    }
+
+    override fun isUsingGridMode(): Boolean {
+        return userDataSource.isUsingGridMode()
+    }
+
+    override fun setUsingGridMode(isUsingGridMode: Boolean) {
+        return userDataSource.setUsingGridMode(isUsingGridMode)
     }
 
     override fun updateProfile(username: String?): Flow<ResultWrapper<Boolean>> {
